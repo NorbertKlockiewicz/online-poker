@@ -6,3 +6,8 @@
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
+
+/poker-client/target/
+/poker-common/target/
+/poker-server/target/
+/poker-model/target/

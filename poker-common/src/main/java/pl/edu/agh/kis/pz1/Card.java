@@ -4,11 +4,13 @@ public class Card {
     private int value;
     private String color;
     private String name;
+    private String colorLabel;
 
-    public Card(int value, String color, String name) {
+    public Card(int value, String color, String name, String colorLabel) {
         this.value = value;
         this.color = color;
         this.name = name;
+        this.colorLabel = colorLabel;
     }
 
     public int getValue() {
@@ -21,6 +23,10 @@ public class Card {
 
     public String getName() {
         return name;
+    }
+
+    public String getColorLabel() {
+        return colorLabel;
     }
 
     @Override

@@ -5,12 +5,14 @@ private String name;
     private int money;
     private int bet;
     private Card[] cards;
-
+    private CardPrinter printer;
     private boolean isFolded = false;
+    private int clientId;
 
-    public Player(String name, int money) {
+    public Player(String name, int money, int clientId) {
         this.name = name;
         this.money = money;
+        this.clientId = clientId;
         this.bet = 0;
         this.cards = new Card[5];
     }
@@ -25,6 +27,10 @@ private String name;
 
     public int getBet() {
         return bet;
+    }
+
+    public int getClientId(){
+        return clientId;
     }
 
     public Card[] getCards() {
@@ -69,6 +75,17 @@ private String name;
         return isFolded;
     }
 
+    public String printCards() {
+        String s = CardPrinter.printCards(cards);
+        s += "\t ======================== \n";
+        s += "\t |                      | \n";
+        s += "\t |    Your bet: "+bet+"      | \n";
+        s += "\t |                      | \n";
+        s += "\t ======================== \n";
+
+        return s;
+    }
+
     private void sortCards(){
         for(int i = 0; i < cards.length; i++){
             for(int j = 0; j < cards.length - 1; j++){
@@ -78,12 +95,6 @@ private String name;
                     cards[j+1] = temp;
                 }
             }
-        }
-    }
-
-    public void printCards(){
-        for(int i = 0; i < cards.length; i++){
-            System.out.println(i + " - " + cards[i].getName() + " of " + cards[i].getColor());
         }
     }
 

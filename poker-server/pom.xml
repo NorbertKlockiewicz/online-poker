@@ -31,6 +31,10 @@
             <artifactId>poker-common</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>pl.edu.agh.kis.pz1</groupId>
+            <artifactId>poker-model</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -50,7 +54,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>pl.edu.agh.kis.pz1.App</mainClass>
+                            <mainClass>pl.edu.agh.kis.pz1.SocketServer</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

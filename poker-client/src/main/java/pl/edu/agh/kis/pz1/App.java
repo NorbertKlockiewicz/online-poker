@@ -1,13 +1,17 @@
 package pl.edu.agh.kis.pz1;
 
-/**
- * Hello world!
- *
- */
+import java.io.*;
+import java.net.*;
+
 public class App 
 {
     public static void main( String[] args )
     {
-        System.out.println( "Hello World!" );
+        Client client = new Client();
+        while(true){
+
+        }
     }
+
 }
+
