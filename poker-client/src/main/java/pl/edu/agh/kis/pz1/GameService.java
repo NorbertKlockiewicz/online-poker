@@ -37,6 +37,11 @@ public class GameService {
         return this.cc.listenForServerMessage();
     }
 
+    public String check(int clientId, int gameId){
+        this.cc.postRequest("CHECK " + clientId + " " + gameId);
+        return this.cc.listenForServerMessage();
+    }
+
     public String changeCards(int clientId, int gameId, int [] cardNumbers){
         String s = "CHANGE "+ clientId + " " + gameId;
         for(int i = 0; i < cardNumbers.length; i++){

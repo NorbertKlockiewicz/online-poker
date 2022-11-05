@@ -1,13 +1,13 @@
 package pl.edu.agh.kis.pz1;
 
 public class Player {
-private String name;
+    final private String name;
     private int money;
     private int bet;
     private Card[] cards;
     private CardPrinter printer;
     private boolean isFolded = false;
-    private int clientId;
+    final private int clientId;
 
     public Player(String name, int money, int clientId) {
         this.name = name;
@@ -75,11 +75,13 @@ private String name;
         return isFolded;
     }
 
-    public String printCards() {
+    public String printCards(int potAmount, int minimalBet) {
         String s = CardPrinter.printCards(cards);
         s += "\t ======================== \n";
         s += "\t |                      | \n";
         s += "\t |    Your bet: "+bet+"      | \n";
+        s += "\t |    In the pot: "+potAmount+"    | \n";
+        s += "\t |    Minimal bet: "+minimalBet+"   | \n";
         s += "\t |                      | \n";
         s += "\t ======================== \n";
 
