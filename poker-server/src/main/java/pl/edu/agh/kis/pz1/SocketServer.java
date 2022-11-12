@@ -6,17 +6,14 @@ import java.io.*;
 public class SocketServer {
     private ServerSocket serverSocket;
     private int numPlayers;
-    private int maxPlayers;
-    private ServerSideConnection[] connections;
-    private Controller controller;
-    private int numRooms;
-    private GameRoom[] rooms;
+    private final int maxPlayers;
+    private final ServerSideConnection[] connections;
+    private final Controller controller;
 
-    public SocketServer(int port, int maxPlayers) {
+    public SocketServer(int maxPlayers) {
         this.maxPlayers = maxPlayers;
         this.connections = new ServerSideConnection[100];
         this.numPlayers = 0;
-        this.numRooms = 0;
         this.controller = new Controller(this);
         try {
             serverSocket = new ServerSocket(3000);
@@ -29,14 +26,10 @@ public class SocketServer {
         return maxPlayers;
     }
 
-    public ServerSideConnection[] getConnections(){
-        return this.connections;
-    }
-
     public void acceptConnections() {
         try {
             System.out.println("Waiting for client on port " + serverSocket.getLocalPort() + "...");
-            while(true) {
+            while(connections.length < 101) {
                 Socket socket = serverSocket.accept();
                 ServerSideConnection connection = new ServerSideConnection(socket, numPlayers);
                 connections[numPlayers] = connection;
@@ -55,13 +48,11 @@ public class SocketServer {
     }
 
     private class ServerSideConnection implements Runnable{
-        private Socket socket;
         private DataInputStream dataIn;
         private DataOutputStream dataOut;
-        private int connectionID;
+        private final int connectionID;
 
         public ServerSideConnection(Socket socket, int connectionID) {
-            this.socket = socket;
             this.connectionID = connectionID;
             try {
                 dataIn = new DataInputStream(socket.getInputStream());

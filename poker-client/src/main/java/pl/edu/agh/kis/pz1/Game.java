@@ -3,13 +3,13 @@ package pl.edu.agh.kis.pz1;
 import java.util.Scanner;
 
 public class Game {
-    private Scanner action = new Scanner(System.in);
-    private ClientConnection cc;
-    private GameService gameService;
+    private final Scanner action = new Scanner(System.in);
+    private final ClientConnection cc;
+    private final GameService gameService;
     private int gameId;
     private boolean inGame = false;
 
-    public Game(ClientConnection cc, int clientId){
+    public Game(ClientConnection cc){
         this.cc = cc;
         this.gameService = new GameService(cc);
         System.out.println("You've been correctly connected to the server.");
@@ -119,7 +119,7 @@ public class Game {
                 }
                 else{
                     System.out.println("Wrong option. Try again.");
-                    openGameMenu(canCheck);
+                    openGameMenu(false);
                 }
                 break;
             default:

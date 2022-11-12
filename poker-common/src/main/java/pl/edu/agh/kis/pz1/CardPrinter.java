@@ -3,67 +3,63 @@ package pl.edu.agh.kis.pz1;
 
 public class CardPrinter {
     public static String printCards(Card [] cards){
-        String s = "";
+        StringBuilder s = new StringBuilder();
         for (int i = 0; i < cards.length; i++) {
-            s = s + "\t ________________";
+            s.append("\t ________________");
         }
-        s+= "\n";
+        s.append("\n");
 
         for (int i = 0; i < cards.length; i++) {
-            s = s + "\t|                |";
+            s.append("\t|                |");
         }
-        s+= "\n";
+        s.append("\n");
 
-        for (int i = 0; i < cards.length; i++) {
-            if(cards[i].getValue()>10){
-                s = s + "\t|  " + cards[i].getName().toUpperCase().charAt(0) + "             |";
-            }
-            else if(cards[i].getValue() == 10){
-                s = s + "\t|  " + cards[i].getName() + "            |";
-            }
-            else {
-                s = s + "\t|  " + cards[i].getName() + "             |";
+        for (Card card : cards) {
+            if (card.getValue() > 10) {
+                s.append("\t|  ").append(card.getName().toUpperCase().charAt(0)).append("             |");
+            } else if (card.getValue() == 10) {
+                s.append("\t|  ").append(card.getName()).append("            |");
+            } else {
+                s.append("\t|  ").append(card.getName()).append("             |");
             }
         }
-        s+= "\n";
+        s.append("\n");
 
         for (int j = 0; j < 2; j++) {
             for (int i = 0; i < cards.length; i++) {
-                s = s + "\t|                |";
+                s.append("\t|                |");
             }
-            s+= "\n";
+            s.append("\n");
         }
 
-        for (int i = 0; i < cards.length; i++) {
-            s = s + "\t|       "+cards[i].getColorLabel()+"        |";
+        for (Card card : cards) {
+            s.append("\t|       ").append(card.getColorLabel()).append("        |");
         }
-        s+= "\n";
+        s.append("\n");
 
         for (int j = 0; j < 2; j++) {
             for (int i = 0; i < cards.length; i++) {
-                s = s + "\t|                |";
+                s.append("\t|                |");
             }
-            s+= "\n";
+            s.append("\n");
         }
+
+        for (Card card : cards) {
+            if (card.getValue() > 10) {
+                s.append("\t|             ").append(card.getName().toUpperCase().charAt(0)).append("  |");
+            } else if (card.getValue() == 10) {
+                s.append("\t|            ").append(card.getName()).append("  |");
+            } else {
+                s.append("\t|             ").append(card.getName()).append("  |");
+            }
+        }
+        s.append("\n");
 
         for (int i = 0; i < cards.length; i++) {
-            if(cards[i].getValue()>10){
-                s = s + "\t|             " + cards[i].getName().toUpperCase().charAt(0) + "  |";
-            }
-            else if(cards[i].getValue() == 10){
-                s = s + "\t|            " + cards[i].getName() + "  |";
-            }
-            else {
-                s = s + "\t|             " + cards[i].getName() + "  |";
-            }
+            s.append("\t|________________|");
         }
-        s+= "\n";
+        s.append("\n");
 
-        for (int i = 0; i < cards.length; i++) {
-            s = s + "\t|________________|";
-        }
-        s+= "\n";
-
-        return s;
+        return s.toString();
     }
 }

@@ -1,14 +1,14 @@
 package pl.edu.agh.kis.pz1;
 
 public class GameService {
-    private ClientConnection cc;
+    private final ClientConnection cc;
 
     public GameService(ClientConnection cc){
         this.cc = cc;
     }
 
     public String createGame(int clientId, String ante){
-        this.cc.putRequest("CREATE_GAME" + " " + clientId + " " + ante);
+        this.cc.postRequest("CREATE_GAME" + " " + clientId + " " + ante);
         return this.cc.listenForServerMessage();
     }
 
@@ -43,16 +43,11 @@ public class GameService {
     }
 
     public String changeCards(int clientId, int gameId, int [] cardNumbers){
-        String s = "CHANGE "+ clientId + " " + gameId;
-        for(int i = 0; i < cardNumbers.length; i++){
-            s += " " + cardNumbers[i];
+        StringBuilder s = new StringBuilder("CHANGE " + clientId + " " + gameId);
+        for (int cardNumber : cardNumbers) {
+            s.append(" ").append(cardNumber);
         }
-        this.cc.postRequest(s);
+        this.cc.postRequest(s.toString());
         return this.cc.listenForServerMessage();
     }
-
-    public void exitGame(){
-        System.exit(0);
-    }
-
 }

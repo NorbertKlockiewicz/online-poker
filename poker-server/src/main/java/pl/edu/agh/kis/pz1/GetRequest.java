@@ -1,12 +1,12 @@
 package pl.edu.agh.kis.pz1;
 
-public class PutRequest extends Request{
-    private int[] params;
-    private String type;
-    private String action;
-    private int clientId;
+public class GetRequest extends Request {
+    final private int[] params;
+    final private String type;
+    final private String action;
+    final private int clientId;
 
-    public PutRequest(String request) {
+    public GetRequest(String request) {
         String[] requestParts = request.split(" ");
         type = requestParts[0];
         action = requestParts[1];

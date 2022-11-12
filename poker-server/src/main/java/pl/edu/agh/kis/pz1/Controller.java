@@ -1,7 +1,7 @@
 package pl.edu.agh.kis.pz1;
 
 public class Controller {
-    private SocketServer server;
+    final private SocketServer server;
     private GameRoom[] rooms;
     private int numRooms = 0;
 
@@ -23,10 +23,6 @@ public class Controller {
                 GetRequest getRequest = new GetRequest(request);
                 get(getRequest);
                 break;
-            case "PUT":
-                PutRequest putRequest = new PutRequest(request);
-                put(putRequest);
-                break;
             default:
                 server.responseToClient(Integer.parseInt(requestArray[1]), "Wrong request type");
         }
@@ -42,7 +38,12 @@ public class Controller {
                     sendToEveryClientExcept(clientId, this.rooms[params[0]].getPlayers(), "Player " + clientId + " joined the game");
                     if(this.rooms[params[0]].isReady()){
                         this.rooms[params[0]].startGame();
-                    };
+                        sendTableStatusToEveryClientInRoom(params[0]);
+                        server.responseToClient(this.rooms[params[0]].getPlayers()[0].getClientId(), this.rooms[params[0]].startBasicTurn());
+                    }
+                    break;
+                case "CREATE_GAME":
+                    server.responseToClient(clientId, createGame(clientId, params));
                     break;
                 case "FOLD":
                     this.rooms[params[0]].fold(clientId);
@@ -52,38 +53,37 @@ public class Controller {
                     }
                     sendTableStatusToEveryClientInRoom(params[0]);
                     sendToEveryClientExcept(clientId, this.rooms[params[0]].getPlayers(), "Player " + clientId + " folded");
-                    this.rooms[params[0]].nextPlayerTurn();
+                    server.responseToClient(this.rooms[params[0]].getPlayers()[this.rooms[params[0]].getNextPlayerTurn()].getClientId(), this.rooms[params[0]].nextPlayerTurn());
                     break;
                 case "CHECK":
                     server.responseToClient(clientId, "200");
                     sendTableStatusToEveryClientInRoom(params[0]);
                     sendToEveryClientExcept(clientId, this.rooms[params[0]].getPlayers(), "Player " + clientId + " checked");
-                    this.rooms[params[0]].nextPlayerTurn();
+                    server.responseToClient(this.rooms[params[0]].getPlayers()[this.rooms[params[0]].getNextPlayerTurn()].getClientId(), this.rooms[params[0]].nextPlayerTurn());
                     break;
                 case "CALL":
                     this.rooms[params[0]].call(clientId);
                     server.responseToClient(clientId, "200");
                     sendTableStatusToEveryClientInRoom(params[0]);
                     sendToEveryClientExcept(clientId, this.rooms[params[0]].getPlayers(), "Player#" + clientId + " called");
-                    this.rooms[params[0]].nextPlayerTurn();
+                    System.out.println("Next player turn: " + this.rooms[params[0]].getNextPlayerTurn());
+                    server.responseToClient(this.rooms[params[0]].getPlayers()[this.rooms[params[0]].getNextPlayerTurn()].getClientId(), this.rooms[params[0]].nextPlayerTurn());
                     break;
                 case "RAISE":
                     this.rooms[params[0]].raise(clientId, params[1]);
                     server.responseToClient(clientId, "200");
                     sendTableStatusToEveryClientInRoom(params[0]);
                     sendToEveryClientExcept(clientId, this.rooms[params[0]].getPlayers(), "Player#" + clientId + " raised by " + params[1]);
-                    this.rooms[params[0]].nextPlayerTurn();
+                    server.responseToClient(this.rooms[params[0]].getPlayers()[this.rooms[params[0]].getNextPlayerTurn()].getClientId(), this.rooms[params[0]].nextPlayerTurn());
                     break;
                 case "CHANGE":
                     int[] cardNumbers = new int[params.length - 1];
-                    for(int i = 1; i < params.length; i++){
-                        cardNumbers[i - 1] = params[i];
-                    }
+                    System.arraycopy(params, 1, cardNumbers, 0, params.length - 1);
                     this.rooms[params[0]].changeCards(clientId, cardNumbers);
                     server.responseToClient(clientId, "200");
                     sendResponse(clientId, rooms[params[0]].getPlayerByClientId(clientId).printCards(rooms[params[0]].getPot(), rooms[params[0]].getMinimalBet()));
                     sendToEveryClientExcept(clientId, this.rooms[params[0]].getPlayers(), "Player#" + clientId + " changed cards");
-                    this.rooms[params[0]].nextPlayerTurn();
+                    server.responseToClient(this.rooms[params[0]].getPlayers()[this.rooms[params[0]].getNextPlayerTurn()].getClientId(), this.rooms[params[0]].nextPlayerTurn());
                     break;
                 default:
                     System.out.println("Unknown action");
@@ -100,29 +100,6 @@ public class Controller {
         }
     }
 
-    private void put(Request request){
-        String action = request.getAction();
-        int clientId = request.getClientId();
-        int[] params = request.getParams();
-        if ("CREATE_GAME".equals(action)) {
-            server.responseToClient(clientId, createGame(clientId, params));
-        } else {
-            server.responseToClient(clientId, "Error: Unknown action");
-        }
-    }
-
-    public void sendResponseToEveryClientInRoom(Player [] players, String response){
-        for(Player player : players){
-            if(player != null){
-                server.responseToClient(player.getClientId(), response);
-            }
-        }
-    }
-
-    public void sendResponse(int clientId, String response){
-        server.responseToClient(clientId, response);
-    }
-
     public String createGame(int clientId, int[] params){
         int gameId;
         try {
@@ -136,8 +113,7 @@ public class Controller {
                 if (numRooms - 1 >= 0) System.arraycopy(temp, 0, rooms, 0, numRooms - 1);
             }
 
-            Deck deck = new Deck();
-            GameRoom room = new GameRoom(deck, params[0], numRooms - 1, server.getMaxPlayers(), this);
+            GameRoom room = new GameRoom(params[0], numRooms - 1, server.getMaxPlayers());
             Player creator = new Player("Player#" + clientId, 1000, clientId);
             room.addPlayer(creator);
             this.rooms[numRooms - 1] = room;
@@ -168,18 +144,18 @@ public class Controller {
             return "USER_ACTION No active games";
         }
 
-        String s = "USER_ACTION ";
+        StringBuilder s = new StringBuilder("USER_ACTION ");
         for(int i = 0; i < numRooms; i++) {
             if(!rooms[i].isGameOver()){
-                s += i + " : " + rooms[i].getRoomInfo() + "\n";
+                s.append(i).append(" : ").append(rooms[i].getRoomInfo()).append("\n");
             }
         }
 
-        if(s.equals("USER_ACTION ")){
+        if(s.toString().equals("USER_ACTION ")){
             return "USER_ACTION No active games";
         }
 
-        return s;
+        return s.toString();
     }
 
     public void sendTableStatusToEveryClientInRoom(int roomId){
@@ -196,5 +172,17 @@ public class Controller {
                 server.responseToClient(player.getClientId(), response);
             }
         }
+    }
+
+    public void sendResponseToEveryClientInRoom(Player [] players, String response){
+        for(Player player : players){
+            if(player != null){
+                server.responseToClient(player.getClientId(), response);
+            }
+        }
+    }
+
+    public void sendResponse(int clientId, String response){
+        server.responseToClient(clientId, response);
     }
 }

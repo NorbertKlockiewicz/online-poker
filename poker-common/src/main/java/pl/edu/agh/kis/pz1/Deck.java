@@ -1,7 +1,7 @@
 package pl.edu.agh.kis.pz1;
 
 public class Deck {
-    private Card[] cards;
+    private final Card[] cards;
     private int cardsLeft;
 
     public Deck() {
@@ -57,13 +57,6 @@ public class Deck {
         }
     }
 
-    public void printDeck(){
-        for (int i = 0; i < cards.length; i++) {
-            System.out.println(cards[i]);
-        }
-    }
-
-    //create method to deal cards to players
     public Card[] dealCards(int numberOfCards){
         Card[] dealtCards = new Card[numberOfCards];
         for (int i = 0; i < numberOfCards; i++) {

@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class ClientConnection {
-    private Socket socket;
     private DataInputStream dataIn;
     private DataOutputStream dataOut;
     private int clientId;
@@ -15,7 +14,7 @@ public class ClientConnection {
     public ClientConnection() {
         System.out.println("----Client----");
         try {
-            socket = new Socket("localhost", 3000);
+            Socket socket = new Socket("localhost", 3000);
             dataIn = new DataInputStream(socket.getInputStream());
             dataOut = new DataOutputStream(socket.getOutputStream());
             clientId = dataIn.readInt();
@@ -42,15 +41,6 @@ public class ClientConnection {
 
     public int getClientId() {
         return clientId;
-    }
-
-    public void putRequest(String request){
-        try {
-            request = "PUT " + request;
-            dataOut.writeUTF(request);
-        } catch (IOException e) {
-            System.out.println("IOException from putRequest()");
-        }
     }
 
     public void postRequest(String request){

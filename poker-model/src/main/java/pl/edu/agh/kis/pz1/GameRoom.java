@@ -1,29 +1,24 @@
 package pl.edu.agh.kis.pz1;
 
 public class GameRoom {
-    private int maxPlayers;
-    final private int minPlayers = 2;
+    final private int maxPlayers;
     private int playersCount = 0;
-    private Player[] players;
-    private Deck deck;
+    final private Player[] players;
+    final private Deck deck;
     private int playersTurn = 0;
     private boolean isGameOver = false;
     private int turn = 1;
     private int pot = 0;
     private int minimalBet;
-    private int ante;
-    private Controller controller;
+    final private int ante;
     private boolean turnShouldEnd = false;
-    private int roomId;
 
-    public GameRoom(Deck deck, int minimalBet, int id, int maxPlayers, Controller controller) {
+    public GameRoom(int minimalBet, int id, int maxPlayers) {
         this.maxPlayers = maxPlayers;
         this.players = new Player[maxPlayers];
-        this.deck = deck;
-        this.controller = controller;
+        this.deck = new Deck();
         this.minimalBet = minimalBet;
         this.ante = minimalBet;
-        this.roomId = id;
     }
 
     public String getRoomInfo(){
@@ -53,6 +48,21 @@ public class GameRoom {
         return minimalBet;
     }
 
+    public int getNextPlayerTurn(){
+        int tempPlayersTurn;
+        tempPlayersTurn = (playersTurn + 1) % playersCount;
+        boolean temp = turnShouldEnd;
+        if(tempPlayersTurn == 0 || turnShouldEnd){
+            int playerNumber = checkIfEveryoneMadeEqualBets();
+            if(playerNumber == -1){
+                tempPlayersTurn = 0;
+                turnShouldEnd = temp;
+            }
+        }
+
+        return tempPlayersTurn;
+    }
+
     public Player getPlayerByClientId(int clientId){
         for(int i = 0; i < this.playersCount; i++){
             if(this.players[i].getClientId() == clientId){
@@ -76,7 +86,7 @@ public class GameRoom {
         }
     }
 
-    public void nextPlayerTurn() {
+    public String nextPlayerTurn() {
         playersTurn = (playersTurn + 1) % playersCount;
         if(playersTurn == 0 || turnShouldEnd){
             int playerNumber = checkIfEveryoneMadeEqualBets();
@@ -87,17 +97,19 @@ public class GameRoom {
             }
         }
         if(turn == 1){
-            startBasicTurn();
+            return startBasicTurn();
         }
         if(turn == 2){
-            startTurnWithCardChanges();
+            return startTurnWithCardChanges();
         }
         if(turn == 3){
-            startBasicTurn();
+            return startBasicTurn();
         }
         if(turn == 4){
-            checkGameOver();
+            return checkGameOver();
         }
+
+        return "Error";
     }
 
     public int checkIfEveryoneMadeEqualBets(){
@@ -114,11 +126,11 @@ public class GameRoom {
         pot += amount;
     }
 
-    private void checkGameOver(){
+    private String checkGameOver(){
         isOnlyOnePlayerLeft();
         isGameOver = true;
         System.out.println("Game over!");
-        this.controller.sendResponseToEveryClientInRoom(this.players, "GAME_OVER");
+        return "GAME_OVER";
         //check which player has best poker hand
         //if more than one player has the same hand, check who has the highest card
     }
@@ -149,40 +161,35 @@ public class GameRoom {
         for (int i = 0; i < playersCount; i++) {
             players[i].setCards(this.deck.dealCards(5));
         }
-        this.controller.sendTableStatusToEveryClientInRoom(roomId);
-        startBasicTurn();
     }
 
     public void fold(int clientId){
         getPlayerByClientId(clientId).setFolded(true);
     }
 
-    public int call(int clientId){
+    public void call(int clientId){
         Player player = getPlayerByClientId(clientId);
         if (player.getBet() == this.minimalBet){
             player.setBet(this.ante + player.getBet());
             this.minimalBet = player.getBet();
             player.removeMoney(this.ante);
             this.addToPot(this.ante);
-            return this.ante;
         }
         else{
             int missingAmount = this.minimalBet - player.getBet();
             player.setBet(this.minimalBet);
             player.removeMoney(missingAmount);
             this.addToPot(missingAmount);
-            return missingAmount;
         }
     }
 
-    public int raise(int clientId, int amount){
+    public void raise(int clientId, int amount){
         Player player = getPlayerByClientId(clientId);
         if (player.getBet() == this.minimalBet){
             this.minimalBet = this.ante + player.getBet() + amount;
             player.setBet(this.ante + player.getBet() + amount);
             player.removeMoney(this.ante + amount);
             this.addToPot(this.ante + amount);
-            return this.ante + amount;
         }
         else{
             int missingAmount = this.minimalBet - player.getBet();
@@ -190,53 +197,51 @@ public class GameRoom {
             player.setBet(this.minimalBet);
             player.removeMoney(missingAmount + amount);
             this.addToPot(missingAmount);
-            return missingAmount;
         }
     }
 
     public void changeCards(int clientId, int[] cardsToChange){
         Player player = getPlayerByClientId(clientId);
         Card [] tempCards = player.getCards();
-        for(int i = 0; i < cardsToChange.length; i++){
-            tempCards[cardsToChange[i]] = this.deck.dealCards(1)[0];
+        for (int j : cardsToChange) {
+            tempCards[j] = this.deck.dealCards(1)[0];
         }
         player.setCards(tempCards);
     }
 
-    private void startBasicTurn(){
+    public String startBasicTurn(){
         if(!this.turnShouldEnd){
                 if(players[playersTurn].isFolded()){
                     nextPlayerTurn();
                 }
                 else{
                     if(players[playersTurn].getBet() == this.minimalBet){
-                        this.controller.sendResponse(players[playersTurn].getClientId(), "USER_ACTION PLAY CHECK Your turn");
+                        return "USER_ACTION PLAY CHECK";
                     }
                     else {
-                        this.controller.sendResponse(players[playersTurn].getClientId(), "USER_ACTION PLAY Your turn");
+                        return "USER_ACTION PLAY CALL";
                     }
-                    this.controller.sendToEveryClientExcept(players[playersTurn].getClientId(),players, "Waiting for " + players[playersTurn].getName());
                 }
         }else{
             if(players[playersTurn].isFolded()){
                 nextPlayerTurn();
             }
             else{
-                this.controller.sendResponse(players[playersTurn].getClientId(), "USER_ACTION PLAY Your turn");
-                this.controller.sendToEveryClientExcept(players[playersTurn].getClientId(),players, "Waiting for " + players[playersTurn].getName());
+                return "USER_ACTION PLAY";
             }
         }
+
+        return "";
     }
 
-    private void startTurnWithCardChanges(){
+    private String startTurnWithCardChanges(){
         if(!players[playersTurn].isFolded()){
-            this.controller.sendResponse(players[playersTurn].getClientId(), "USER_ACTION CHANGE Your turn, choose which cards do you want to change(starting with 0): ");
-        }
-        else if(players[playersTurn].isFolded()){
-            nextPlayerTurn();
+            return "USER_ACTION CHANGE";
         }
         else{
-            this.controller.sendToEveryClientExcept(players[playersTurn].getClientId(), players, "Waiting for " + players[playersTurn].getName());
+            nextPlayerTurn();
         }
+
+        return "";
     }
 }

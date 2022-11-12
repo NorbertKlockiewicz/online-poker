@@ -1,10 +1,10 @@
 package pl.edu.agh.kis.pz1;
 
 public class Card {
-    private int value;
-    private String color;
-    private String name;
-    private String colorLabel;
+    private final int value;
+    private final String color;
+    private final String name;
+    private final String colorLabel;
 
     public Card(int value, String color, String name, String colorLabel) {
         this.value = value;
@@ -15,10 +15,6 @@ public class Card {
 
     public int getValue() {
         return value;
-    }
-
-    public String getColor() {
-        return color;
     }
 
     public String getName() {

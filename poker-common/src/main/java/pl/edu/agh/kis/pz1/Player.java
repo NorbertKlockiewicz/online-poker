@@ -5,7 +5,6 @@ public class Player {
     private int money;
     private int bet;
     private Card[] cards;
-    private CardPrinter printer;
     private boolean isFolded = false;
     final private int clientId;
 
@@ -19,10 +18,6 @@ public class Player {
 
     public String getName() {
         return name;
-    }
-
-    public int getMoney() {
-        return money;
     }
 
     public int getBet() {
@@ -46,25 +41,8 @@ public class Player {
         sortCards();
     }
 
-    public void addMoney(int money) {
-        this.money += money;
-    }
-
     public void removeMoney(int money) {
         this.money -= money;
-    }
-
-    public void removeBet() {
-        this.money += this.bet;
-        this.bet = 0;
-    }
-
-    public void resetBet() {
-        this.bet = 0;
-    }
-
-    public void resetCards() {
-        this.cards = new Card[5];
     }
 
     public void setFolded(boolean isFolded) {
