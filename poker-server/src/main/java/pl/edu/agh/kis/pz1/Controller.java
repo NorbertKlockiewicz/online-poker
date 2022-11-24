@@ -114,7 +114,7 @@ public class Controller {
             }
 
             GameRoom room = new GameRoom(params[0], numRooms - 1, server.getMaxPlayers());
-            Player creator = new Player("Player#" + clientId, 1000, clientId);
+            Player creator = new Player("Player#" + clientId, clientId);
             room.addPlayer(creator);
             this.rooms[numRooms - 1] = room;
             gameId = numRooms - 1;
@@ -129,7 +129,7 @@ public class Controller {
     public String joinGame(int clientId, int roomId){
         try {
             GameRoom room = rooms[roomId];
-            Player player = new Player("Player#" + clientId, 1000, clientId);
+            Player player = new Player("Player#" + clientId, clientId);
             System.out.println("Player#" + clientId + " joined game");
             room.addPlayer(player);
         } catch (Exception e){

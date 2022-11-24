@@ -18,8 +18,8 @@ public class Game {
 
     public void openMenu(){
         System.out.println("Choose an option:");
-        System.out.println("1. Create a new game(CREATE <ANTE>");
-        System.out.println("2. Join an existing game(JOIN <ROOM_ID>");
+        System.out.println("1. Create a new game(CREATE <ANTE>)");
+        System.out.println("2. Join an existing game(JOIN <ROOM_ID>)");
         System.out.println("3. Display active games(SHOW)");
         String option = action.nextLine();
         String [] options = option.split(" ");

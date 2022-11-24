@@ -44,7 +44,11 @@ public class SocketServer {
     }
 
     public void responseToClient(int clientId, String s){
-        this.connections[clientId].sendResponse(s);
+        try {
+            this.connections[clientId].sendResponse(s);
+        } catch (Exception e) {
+            System.out.println("IOException from responseToClient()");
+        }
     }
 
     private class ServerSideConnection implements Runnable{

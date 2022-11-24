@@ -65,4 +65,8 @@ public class Deck {
         }
         return dealtCards;
     }
+
+    public int getCardsLeft() {
+        return cardsLeft;
+    }
 }

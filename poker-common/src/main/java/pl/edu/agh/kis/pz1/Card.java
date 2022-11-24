@@ -17,6 +17,10 @@ public class Card {
         return value;
     }
 
+    public String getSuit() {
+        return color;
+    }
+
     public String getName() {
         return name;
     }

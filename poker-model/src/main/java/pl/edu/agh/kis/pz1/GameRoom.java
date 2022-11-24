@@ -153,7 +153,6 @@ public class GameRoom {
 
     public void startGame(){
         for (int i = 0; i < playersCount; i++) {
-            players[i].removeMoney(this.minimalBet);
             players[i].setBet(this.minimalBet);
             this.addToPot(this.minimalBet);
         }
@@ -172,13 +171,11 @@ public class GameRoom {
         if (player.getBet() == this.minimalBet){
             player.setBet(this.ante + player.getBet());
             this.minimalBet = player.getBet();
-            player.removeMoney(this.ante);
             this.addToPot(this.ante);
         }
         else{
             int missingAmount = this.minimalBet - player.getBet();
             player.setBet(this.minimalBet);
-            player.removeMoney(missingAmount);
             this.addToPot(missingAmount);
         }
     }
@@ -188,14 +185,12 @@ public class GameRoom {
         if (player.getBet() == this.minimalBet){
             this.minimalBet = this.ante + player.getBet() + amount;
             player.setBet(this.ante + player.getBet() + amount);
-            player.removeMoney(this.ante + amount);
             this.addToPot(this.ante + amount);
         }
         else{
             int missingAmount = this.minimalBet - player.getBet();
             this.minimalBet = this.minimalBet + amount;
             player.setBet(this.minimalBet);
-            player.removeMoney(missingAmount + amount);
             this.addToPot(missingAmount);
         }
     }

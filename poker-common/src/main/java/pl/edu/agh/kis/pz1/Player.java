@@ -2,15 +2,13 @@ package pl.edu.agh.kis.pz1;
 
 public class Player {
     final private String name;
-    private int money;
     private int bet;
     private Card[] cards;
     private boolean isFolded = false;
     final private int clientId;
 
-    public Player(String name, int money, int clientId) {
+    public Player(String name, int clientId) {
         this.name = name;
-        this.money = money;
         this.clientId = clientId;
         this.bet = 0;
         this.cards = new Card[5];
@@ -39,10 +37,6 @@ public class Player {
     public void setCards(Card[] cards) {
         this.cards = cards;
         sortCards();
-    }
-
-    public void removeMoney(int money) {
-        this.money -= money;
     }
 
     public void setFolded(boolean isFolded) {
@@ -82,7 +76,6 @@ public class Player {
     public String toString() {
         return "Player{" +
                 "name='" + name + '\'' +
-                ", money=" + money +
                 ", bet=" + bet +
                 ", cards=" + cards[0] + cards[1] + cards[2] + cards[3] + cards[4] +
                 '}';
