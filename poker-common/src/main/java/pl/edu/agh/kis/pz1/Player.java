@@ -6,6 +6,7 @@ public class Player {
     private Card[] cards;
     private boolean isFolded = false;
     final private int clientId;
+    private Hand hand;
 
     public Player(String name, int clientId) {
         this.name = name;
@@ -30,11 +31,16 @@ public class Player {
         return cards;
     }
 
+    public HandType getHandType(){
+        return hand.getType();
+    }
+
     public void setBet(int bet) {
         this.bet = bet;
     }
 
     public void setCards(Card[] cards) {
+        this.hand = new Hand(cards);
         this.cards = cards;
         sortCards();
     }
