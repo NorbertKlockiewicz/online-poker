@@ -1,13 +1,19 @@
 package pl.edu.agh.kis.pz1;
 
+import java.util.Objects;
+
 public class Hand {
     private HandType type;
-    private Card[] cards;
+    private final Card[] cards;
 
     public Hand(Card[] cards) {
         this.cards = cards;
         sortCards();
         type = HandType.HIGH_CARD;
+        evaluate();
+    }
+
+    public void evaluate(){
         if (isRoyalFlush()) {
             type = HandType.ROYAL_FLUSH;
         } else if (isStraightFlush()) {
@@ -28,6 +34,7 @@ public class Hand {
             type = HandType.PAIR;
         }
     }
+
     public HandType getType() {
         return type;
     }
@@ -43,6 +50,7 @@ public class Hand {
             }
         }
     }
+
     private boolean isRoyalFlush(){
         return isStraightFlush() && cards[0].getValue() == 10;
     }
@@ -62,7 +70,7 @@ public class Hand {
     }
 
     private boolean isFlush(){
-        return cards[0].getSuit() == cards[1].getSuit() && cards[1].getSuit() == cards[2].getSuit() && cards[2].getSuit() == cards[3].getSuit() && cards[3].getSuit() == cards[4].getSuit();
+        return Objects.equals(cards[0].getSuit(), cards[1].getSuit()) && Objects.equals(cards[1].getSuit(), cards[2].getSuit()) && Objects.equals(cards[2].getSuit(), cards[3].getSuit()) && Objects.equals(cards[3].getSuit(), cards[4].getSuit());
     }
 
     private boolean isStraight(){

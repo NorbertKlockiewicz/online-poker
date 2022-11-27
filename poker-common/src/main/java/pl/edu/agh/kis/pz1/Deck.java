@@ -9,22 +9,22 @@ public class Deck {
         cardsLeft = 52;
         int i = 0;
         for (int value = 2; value <= 14; value++) {
-            for (String color : new String[]{"hearts", "diamonds", "clubs", "spades"}) {
-                String colorLabel = "";
-                switch(color){
-                    case "hearts":
-                        colorLabel = "\u2665";
-                        break;
-                    case "diamonds":
-                        colorLabel = "\u2666";
-                        break;
-                    case "clubs":
-                        colorLabel = "\u2663";
-                        break;
-                    case "spades":
-                        colorLabel = "\u2660";
-                        break;
-                }
+                    for (String color : new String[]{"hearts", "diamonds", "clubs", "spades"}) {
+                        String colorLabel = "";
+                        switch(color){
+                            case "hearts":
+                                colorLabel = "\u2665";
+                                break;
+                            case "diamonds":
+                                colorLabel = "\u2666";
+                                break;
+                            case "clubs":
+                                colorLabel = "\u2663";
+                                break;
+                            case "spades":
+                                colorLabel = "\u2660";
+                                break;
+                        }
                 cards[i] = new Card(value, color, valueToName(value), colorLabel);
                 i++;
             }

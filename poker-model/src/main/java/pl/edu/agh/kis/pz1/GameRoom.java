@@ -13,7 +13,7 @@ public class GameRoom {
     final private int ante;
     private boolean turnShouldEnd = false;
 
-    public GameRoom(int minimalBet, int id, int maxPlayers) {
+    public GameRoom(int minimalBet, int maxPlayers) {
         this.maxPlayers = maxPlayers;
         this.players = new Player[maxPlayers];
         this.deck = new Deck();

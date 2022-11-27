@@ -4,24 +4,24 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class PlayerTest {
     public static void main(String[] args) {
     }
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
     }
 
     @Test
     public void testPlayer() {
         Player player = new Player("John", 1);
-        assertTrue(player.getName() == "John");
+        assertSame("John", player.getName());
     }
 
     @Test
@@ -34,7 +34,7 @@ public class PlayerTest {
         cards[3] = new Card(5, "Hearts", "5", "hearts");
         cards[4] = new Card(11, "Hearts", "J", "hearts");
         player.setCards(cards);
-        assertTrue(player.getCards() instanceof Card[] && player.getCards().length == 5 && player.getCards() == cards);
+        assertTrue(player.getCards() != null && player.getCards().length == 5 && player.getCards() == cards);
     }
 
     @Test
@@ -47,7 +47,7 @@ public class PlayerTest {
         cards[3] = new Card(5, "Hearts", "5", "hearts");
         cards[4] = new Card(11, "Hearts", "J", "hearts");
         player.setCards(cards);
-        assertTrue(player.printCards(10, 10) instanceof String);
+        assertNotNull(player.printCards(10, 10));
     }
 
     @Test
@@ -60,7 +60,7 @@ public class PlayerTest {
         cards[3] = new Card(5, "Hearts", "5", "hearts");
         cards[4] = new Card(11, "Hearts", "J", "hearts");
         player.setCards(cards);
-        assertTrue(player.toString() instanceof String);
+        assertNotNull(player.toString());
     }
 
     @Test
@@ -69,5 +69,4 @@ public class PlayerTest {
         player.setFolded(true);
         assertTrue(player.isFolded());
     }
-
 }

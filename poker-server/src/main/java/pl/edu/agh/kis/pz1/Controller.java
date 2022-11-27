@@ -113,7 +113,7 @@ public class Controller {
                 if (numRooms - 1 >= 0) System.arraycopy(temp, 0, rooms, 0, numRooms - 1);
             }
 
-            GameRoom room = new GameRoom(params[0], numRooms - 1, server.getMaxPlayers());
+            GameRoom room = new GameRoom(params[0], server.getMaxPlayers());
             Player creator = new Player("Player#" + clientId, clientId);
             room.addPlayer(creator);
             this.rooms[numRooms - 1] = room;
